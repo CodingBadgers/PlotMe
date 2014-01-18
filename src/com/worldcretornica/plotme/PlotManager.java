@@ -385,14 +385,41 @@ public class PlotManager
 		}
 	}
 	
-	@SuppressWarnings("deprecation")
     public static void setOwnerSign(World world, Plot plot)
 	{	
+    	// BOTTOM BOTTOM
 		Location pillar = new Location(world, bottomX(plot.id, world) - 1, getMap(world).RoadHeight + 1, bottomZ(plot.id, world) - 1);
-						
-		Block bsign = pillar.add(0, 0, -1).getBlock();
+		Block sign1 = pillar.clone().add(0, 0, -1).getBlock();
+		Block sign2 = pillar.clone().add(-1, 0, 0).getBlock();
+		setupOwnerSign(world, plot, sign1, (byte) 2);
+		setupOwnerSign(world, plot, sign2, (byte) 4);
+
+		// TOP BOTTOM
+		Location pillar3 = new Location(world, topX(plot.id, world) + 1, getMap(world).RoadHeight + 1, bottomZ(plot.id, world) - 1);
+		Block sign5 = pillar3.clone().add(0, 0, -1).getBlock();
+		Block sign6 = pillar3.clone().add(1, 0, 0).getBlock();
+		setupOwnerSign(world, plot, sign5, (byte) 2);
+		setupOwnerSign(world, plot, sign6, (byte) 5);
+
+		// TOP TOP
+		Location pillar2 = new Location(world, topX(plot.id, world) + 1, getMap(world).RoadHeight + 1, topZ(plot.id, world) + 1);
+		Block sign3 = pillar2.clone().add(0, 0, 1).getBlock();
+		Block sign4 = pillar2.clone().add(1, 0, 0).getBlock();
+		setupOwnerSign(world, plot, sign3, (byte) 3);
+		setupOwnerSign(world, plot, sign4, (byte) 5);
+		
+		// BOTTOM TOP
+		Location pillar4 = new Location(world, bottomX(plot.id, world) - 1, getMap(world).RoadHeight + 1, topZ(plot.id, world) + 1);
+		Block sign7 = pillar4.clone().add(0, 0, 1).getBlock();
+		Block sign8 = pillar4.clone().add(-1, 0, 0).getBlock();
+		setupOwnerSign(world, plot, sign7, (byte) 3);
+		setupOwnerSign(world, plot, sign8, (byte) 4);
+	}
+
+	@SuppressWarnings("deprecation")
+	public static void setupOwnerSign(World world, Plot plot, Block bsign, byte direction) {
 		bsign.setType(Material.AIR);
-		bsign.setTypeIdAndData(Material.WALL_SIGN.getId(), (byte) 2, false);
+		bsign.setTypeIdAndData(Material.WALL_SIGN.getId(), direction, false);
 		
 		String id = getPlotId(new Location(world, bottomX(plot.id, world), 0, bottomZ(plot.id, world)));
 		
@@ -489,11 +516,35 @@ public class PlotManager
 	public static void removeOwnerSign(World world, String id)
 	{
 		Location bottom = getPlotBottomLoc(world, id);
-		
+		Location top = getPlotTopLoc(world, id);
+
+    	// BOTTOM BOTTOM
 		Location pillar = new Location(world, bottom.getX() - 1, getMap(world).RoadHeight + 1, bottom.getZ() - 1);
+		Block sign1 = pillar.clone().add(0, 0, -1).getBlock();
+		Block sign2 = pillar.clone().add(-1, 0, 0).getBlock();
+		sign1.setType(Material.AIR);
+		sign2.setType(Material.AIR);
+
+		// TOP BOTTOM
+		Location pillar3 = new Location(world, top.getX() + 1, getMap(world).RoadHeight + 1, bottom.getZ() - 1);
+		Block sign5 = pillar3.clone().add(0, 0, -1).getBlock();
+		Block sign6 = pillar3.clone().add(1, 0, 0).getBlock();
+		sign5.setType(Material.AIR);
+		sign6.setType(Material.AIR);
+
+		// TOP TOP
+		Location pillar2 = new Location(world, top.getX() + 1, getMap(world).RoadHeight + 1, top.getZ() + 1);
+		Block sign3 = pillar2.clone().add(0, 0, 1).getBlock();
+		Block sign4 = pillar2.clone().add(1, 0, 0).getBlock();
+		sign3.setType(Material.AIR);
+		sign4.setType(Material.AIR);
 		
-		Block bsign = pillar.add(0, 0, -1).getBlock();
-		bsign.setType(Material.AIR);
+		// BOTTOM TOP
+		Location pillar4 = new Location(world, bottom.getX() - 1, getMap(world).RoadHeight + 1, top.getZ() + 1);
+		Block sign7 = pillar4.clone().add(0, 0, 1).getBlock();
+		Block sign8 = pillar4.clone().add(-1, 0, 0).getBlock();
+		sign7.setType(Material.AIR);
+		sign8.setType(Material.AIR);
 	}
 	
 	public static void removeSellSign(World world, String id)
@@ -1556,8 +1607,7 @@ public class PlotManager
 		
 		if(pmi != null)
 		{
-			return new Location(w, bottomX(plot.id, w) + (topX(plot.id, w) - 
-					PlotManager.bottomX(plot.id, w))/2, pmi.RoadHeight + 2, bottomZ(plot.id, w) - 2);
+			return new Location(w, bottomX(plot.id, w) - 2, pmi.RoadHeight + 2, bottomZ(plot.id, w) - 2, -45f, 0);
 		}
 		else
 		{
